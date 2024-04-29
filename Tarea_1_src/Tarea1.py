@@ -65,25 +65,28 @@ def red_alert(frame):
 
     return blend
 
-def mascara(image):
+def Duck_detector(image):
     # Set minimum and max HSV values to display
-    lower = np.array([95, 255, 178])
-    upper = np.array([97, 255, 255])
+    lower = np.array([94, 253, 176])
+    upper = np.array([103, 255, 255])
 
     # Create HSV Image and threshold into a range.
     hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, lower, upper)
 
+    # Do perform morphological operations
     kernel = np.ones((5,5),np.uint8)
-    op_morf = cv2.erode(mask,kernel,iterations = 2)
-    op_morf = cv2.dilate(mask,kernel,iterations = 10)
+    op_morf = cv2.erode(mask,kernel,iterations = 1)
+    op_morf = cv2.dilate(op_morf,kernel,iterations = 20)
 
+    # To create contours.
     contours, hierarchy = cv2.findContours(op_morf, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     for c in contours:
         x,y,w,h = cv2.boundingRect(c)
         cv2.rectangle(image, (x,y), (x + w, y + h), (0,0,255), 2)
 
+        # Emergency brake
         if w > 300 or h > 300:
             action = np.array([-0.44, 0])
             env.step(action)
@@ -92,7 +95,6 @@ def mascara(image):
 
         else:
             cv2.putText(image, 'Duckie', (x,y - 10) , cv2.FONT_HERSHEY_SIMPLEX , 1, (0,0,255), 2, cv2.LINE_AA) 
-
     return image
 
 @env.unwrapped.window.event
@@ -164,9 +166,9 @@ def update(dt):
         #env.reset()
         env.render()
 
-    image_2 = mascara(obs)
-
-    cv2.imshow('image',image_2)
+    # Duckie detector display
+    duck_image = Duck_detector(obs)
+    cv2.imshow('image',duck_image)
 
     cv2.waitKey(1)
 
