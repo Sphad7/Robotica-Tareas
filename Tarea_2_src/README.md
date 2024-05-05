@@ -1,4 +1,4 @@
-# **Tarea N°2: Aprendiendo a detectar l´ıneas y eliminar distorsión**
+# **Tarea N°2: Aprendiendo a detectar líneas y eliminar distorsión**
 
 ## 1. Detección de líneas usando Transformada de Hough
 ## 2. Calibración de Cámara utilizando Tablero de Ajedrez
